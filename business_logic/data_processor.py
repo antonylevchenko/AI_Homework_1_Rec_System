@@ -4,23 +4,54 @@ import os
 
 from model.movie_rate import MovieRate
 from model.user import User
+from model.movie_with_name import  Movie_With_Name
 
 # This is just a processor for csv files. It can create a list of users
 class DataProcessor:
     __rates_path: str
     __context_place_path: str
     __context_day_path: str
+    __movie_names_path: str
 
-    def __init__(self, rates_path: str, context_place_path: str, context_day_path: str):
+    __movies_from_file: []
+
+    def __init__(self,
+                 rates_path: str,
+                 context_place_path: str,
+                 context_day_path: str,
+                 movie_names_path: str):
         assert os.path.exists(rates_path) and os.path.splitext(rates_path)[-1].lower() == '.csv', \
             'Incorrect data file.'
         assert os.path.exists(context_place_path) and os.path.splitext(context_place_path)[-1].lower() == '.csv', \
             'Incorrect context_place file.'
         assert os.path.exists(context_day_path) and os.path.splitext(context_day_path)[-1].lower() == '.csv', \
             'Incorrect context_day file.'
+        assert os.path.exists(movie_names_path) and os.path.splitext(context_day_path)[-1].lower() == '.csv', \
+            'Incorrect movie_names file.'
         self.__rates_path = rates_path
         self.__context_place_path = context_day_path
         self.__context_day_path = context_day_path
+        self.__movie_names_path = movie_names_path
+        self.__movies_from_file = []
+
+
+    def get_real_movie_name(self, basic_movie_name: str):
+        if (self.__movies_from_file.__len__() == 0):
+            self.__movies_from_file = self.get_movie_list_from_file()
+        result = next(filter(lambda m: m.basic_name == basic_movie_name, self.__movies_from_file)).real_name;
+        return result;
+
+    def get_movie_list_from_file(self):
+        movies = []
+        with open(self.__movie_names_path, mode='r') as csv_file:
+            csv_reader = csv.DictReader(csv_file)
+            csv_reader.fieldnames = "basic_name", "real_name"
+            for row in csv_reader:
+                new_movie = Movie_With_Name()
+                new_movie.basic_name = row["basic_name"]
+                new_movie.real_name = row["real_name"]
+                movies.append(new_movie);
+        return movies
 
     def get_users(self, mode):
         if mode == 'full':

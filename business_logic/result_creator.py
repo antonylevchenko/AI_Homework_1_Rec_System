@@ -1,5 +1,8 @@
+import json
+
 # That is probably not the best way to create a .json file. But it is much easier than generation of object having
 # necessary format.
+
 
 def create_json(output_path, user_name, task_1_result, task_2_result):
     with open(output_path, 'w') as file:
@@ -19,3 +22,8 @@ def create_json(output_path, user_name, task_1_result, task_2_result):
             file.write('"no such movie":' + '-')
         file.write("}\n")
         file.write("}")
+
+
+def create_json_for_information(output_path, data):
+    with open(output_path, 'w') as file:
+        json.dump(data, file)
