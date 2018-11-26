@@ -30,7 +30,7 @@ class Wikidata_Querier:
         self.__sparql_wrapper.setQuery("""
         SELECT ?actor ?actorLabel ?character ?characterLabel
         WHERE {  
-          wd:Q47703
+          wd:""" + q_id + """
           p:P161 [
                     ps:P161 ?actor;
                     pq:P453 ?character
